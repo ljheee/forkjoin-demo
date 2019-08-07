@@ -12,7 +12,7 @@ import java.util.concurrent.RecursiveTask;
  * <p>
  * 大任务是：计算随机的1000个数字的和。
  */
-public class RecursiveTaskDemo extends RecursiveTask<Integer> {
+public class RecursiveTaskSummation extends RecursiveTask<Integer> {
 
 
     private static final int MAX = 70;
@@ -21,7 +21,7 @@ public class RecursiveTaskDemo extends RecursiveTask<Integer> {
     private int end;
 
 
-    public RecursiveTaskDemo(int[] arr, int start, int end) {
+    public RecursiveTaskSummation(int[] arr, int start, int end) {
         this.arr = arr;
         this.start = start;
         this.end = end;
@@ -39,8 +39,8 @@ public class RecursiveTaskDemo extends RecursiveTask<Integer> {
         } else {
             // 将大任务分解成两个小任务
             int middle = (start + end) / 2;
-            RecursiveTaskDemo left = new RecursiveTaskDemo(arr, start, middle);
-            RecursiveTaskDemo right = new RecursiveTaskDemo(arr, middle, end);
+            RecursiveTaskSummation left = new RecursiveTaskSummation(arr, start, middle);
+            RecursiveTaskSummation right = new RecursiveTaskSummation(arr, middle, end);
 //            // 并行执行两个小任务
 //            left.fork();
 //            right.fork();
@@ -69,10 +69,10 @@ public class RecursiveTaskDemo extends RecursiveTask<Integer> {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
 
         // 提交可分解的PrintTask任务
-        Future<Integer> future = forkJoinPool.submit(new RecursiveTaskDemo(arr, 0, arr.length));//submit将 ForkJoinTask 类的对象提交给 ForkJoinPool，ForkJoinPool 将立刻开始执行 ForkJoinTask。
-        System.out.println("计算出来的总和1="+future.get());
+        Future<Integer> future = forkJoinPool.submit(new RecursiveTaskSummation(arr, 0, arr.length));//submit将 ForkJoinTask 类的对象提交给 ForkJoinPool，ForkJoinPool 将立刻开始执行 ForkJoinTask。
+        System.out.println("计算出来的总和1=" + future.get());
 
-        Integer integer = forkJoinPool.invoke(new RecursiveTaskDemo(arr, 0, arr.length));
+        Integer integer = forkJoinPool.invoke(new RecursiveTaskSummation(arr, 0, arr.length));
 
         System.out.println("计算出来的总和=" + integer);
 
